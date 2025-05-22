@@ -37,6 +37,51 @@
 		icon: 'ArrowsAltOutlined',
 	},
 
+	// Quản trị viên
+	{
+		path: '/admin',
+		name: 'Quản trị viên',
+		icon: 'UserOutlined',
+		routes: [
+			{
+				path: '/admin/login',
+				name: 'Đăng nhập',
+				component: './Admin/Login',
+				hideInMenu: true,
+			},
+			{
+				path: '/admin/dashboard',
+				name: 'Dashboard',
+				component: './Admin/Dashboard',
+				hideInMenu: true,
+			},
+			{
+				path: '/admin/schools',
+				name: 'Quản lý trường',
+				component: './Admin/School',
+				icon: 'BankOutlined',
+				hideInMenu: true,
+			},
+			{
+				path: '/admin/schools/:id',
+				name: 'Chi tiết trường',
+				component: './Admin/School/SchoolDetail',
+				hideInMenu: true,
+			},
+			{
+				path: '/admin/applications',
+				name: 'Quản lý hồ sơ',
+				component: './Admin/Application',
+				icon: 'FileOutlined',
+				hideInMenu: true,
+			},
+			{
+				path: '/admin',
+				redirect: '/admin/login',
+			},
+		],
+	},
+
 	// DANH MUC HE THONG
 	// {
 	// 	name: 'DanhMuc',

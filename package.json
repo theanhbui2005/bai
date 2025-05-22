@@ -37,7 +37,8 @@
     "serve": "umi-serve",
     "tsc": "tsc --noEmit",
     "prepare": "husky install",
-    "sentry:sourcemaps": ""
+    "sentry:sourcemaps": "",
+    "mock": "json-server --watch db.json --port 3001"
   },
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",
