@@ -37,9 +37,9 @@
 		icon: 'ArrowsAltOutlined',
 	},
 	{
-		path: '/Destination',
-		name: 'Destination',
-		component: './Destination',
+		path: '/selectionOptions',
+		name: 'selectionOptions ',
+		component: './selectionOptions',
 		icon: 'ArrowsAltOutlined',
 	},
 
