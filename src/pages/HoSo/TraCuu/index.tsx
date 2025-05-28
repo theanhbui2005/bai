@@ -1,23 +1,27 @@
 import React, { useState } from 'react';
 import { Input, Table } from 'antd';
 
-const mockKetQua = [
-  { maHoSo: 'HS001', hoTen: 'Nguyễn Văn A', trangThai: 'Đã duyệt', ghiChu: '' },
-  { maHoSo: 'HS002', hoTen: 'Trần Thị B', trangThai: 'Chờ duyệt', ghiChu: '' },
-];
-
 const TraCuuHoSo = () => {
   const [keyword, setKeyword] = useState('');
   const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = (value: string) => {
-    setData(
-      mockKetQua.filter(
-        hs =>
-          hs.maHoSo.toLowerCase().includes(value.toLowerCase()) ||
-          hs.hoTen.toLowerCase().includes(value.toLowerCase()),
-      ),
-    );
+  const handleSearch = async (value: string) => {
+    setLoading(true);
+    try {
+      const res = await fetch('http://localhost:3001/ho_so').then(r => r.json());
+      // Kiểm tra dữ liệu trả về
+      // console.log(res);
+      const filtered = res.filter(
+        (hs: any) =>
+          (hs.ho_ten || '').toLowerCase().includes(value.toLowerCase()) ||
+          (hs.id ? hs.id.toString() : '').includes(value)
+      );
+      setData(filtered);
+    } catch (error) {
+      setData([]);
+    }
+    setLoading(false);
   };
 
   return (
@@ -33,13 +37,14 @@ const TraCuuHoSo = () => {
       />
       <Table
         dataSource={data}
+        loading={loading}
         columns={[
-          { title: 'Mã hồ sơ', dataIndex: 'maHoSo' },
-          { title: 'Họ tên', dataIndex: 'hoTen' },
-          { title: 'Trạng thái', dataIndex: 'trangThai' },
-          { title: 'Ghi chú', dataIndex: 'ghiChu' },
+          { title: 'Mã hồ sơ', dataIndex: 'id' },
+          { title: 'Họ tên', dataIndex: 'ho_ten' },
+          { title: 'Trạng thái', dataIndex: 'trang_thai' },
+          { title: 'Ghi chú', dataIndex: 'ghi_chu' },
         ]}
-        rowKey="maHoSo"
+        rowKey="id"
       />
     </div>
   );
