@@ -37,7 +37,12 @@
     "serve": "umi-serve",
     "tsc": "tsc --noEmit",
     "prepare": "husky install",
-    "sentry:sourcemaps": ""
+    "sentry:sourcemaps": "",
+    "mock": "json-server --watch db.json --port 3001",
+    "dev:watch": "node --watch-path=./db.json --watch ./node_modules/.bin/umi dev",
+    "mock:watch": "concurrently \"nodemon --watch db.json --exec 'cat db.json'\" \"umi dev\"",
+    "refresher": "node fileRefresher.js",
+    "dev:auto": "concurrently \"npm run refresher\" \"npm run dev\""
   },
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",
@@ -65,6 +70,7 @@
     "antd-img-crop": "^4.2.4",
     "apexcharts": "^3.41.1",
     "axios": "^0.21.1",
+    "chokidar": "^4.0.3",
     "classnames": "^2.2.6",
     "fs-extra": "^11.2.0",
     "js-file-download": "^0.4.12",
@@ -123,7 +129,12 @@
     "@umijs/preset-dumi": "^1.1.7",
     "@umijs/preset-react": "^1.7.4",
     "@umijs/yorkie": "^2.0.3",
+<<<<<<< HEAD
     "cross-env": "^7.0.3",
+=======
+    "concurrently": "8.2.2",
+    "cross-env": "^7.0.0",
+>>>>>>> origin/ky1234vn
     "enzyme": "^3.11.0",
     "eslint": "^7.1.0",
     "express": "^4.17.1",
@@ -131,6 +142,7 @@
     "husky": "^7.0.1",
     "jsdom-global": "^3.0.2",
     "lint-staged": "^10.0.0",
+    "nodemon": "^3.1.10",
     "prettier": "^2.3.2",
     "stylelint": "^13.0.0",
     "typescript": "^4.2.2"
