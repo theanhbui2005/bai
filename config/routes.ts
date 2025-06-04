@@ -87,6 +87,12 @@
 			},
 		],
 	},
+	{
+		path: '/thi-sinh',
+		name: 'ThiSinh',
+		component: './ThiSinh',
+		icon: 'ArrowsAltOutlined',
+	},
 
 	// DANH MUC HE THONG
 	// {
