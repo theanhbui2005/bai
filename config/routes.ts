@@ -94,19 +94,6 @@
 		icon: 'ArrowsAltOutlined',
 	},
 
-	// DANH MUC HE THONG
-	// {
-	// 	name: 'DanhMuc',
-	// 	path: '/danh-muc',
-	// 	icon: 'copy',
-	// 	routes: [
-	// 		{
-	// 			name: 'ChucVu',
-	// 			path: 'chuc-vu',
-	// 			component: './DanhMuc/ChucVu',
-	// 		},
-	// 	],
-	// },
 
 	{
 		path: '/notification',
@@ -130,6 +117,29 @@
 		layout: false,
 		hideInMenu: true,
 	},
+     {
+        path: '/ho-so',
+        name: 'Hồ sơ',
+        icon: 'ProfileOutlined',
+        routes: [
+            {
+                path: '/ho-so/thong-ke',
+                name: 'Thống kê hồ sơ',
+                component: './HoSo/ThongKe',
+                icon: 'BarChartOutlined',
+            },
+            {
+                path: '/ho-so/tra-cuu',
+                name: 'Tra cứu hồ sơ',
+                component: './HoSo/TraCuu',
+                icon: 'SearchOutlined',
+            },
+            {
+                path: '/ho-so',
+                redirect: '/ho-so/thong-ke',
+            },
+        ],
+    },
 	{
 		path: '/',
 	},

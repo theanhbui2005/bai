@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import type { ThiSinh } from './ThiSinh/types';
+import type { ThiSinh, UseThiSinhModel } from './types';
 
-export default function useThiSinh() {
+export const useThiSinh = (): UseThiSinhModel => {
     const [data, setData] = useState<ThiSinh[]>([]);
     const [status, setStatus] = useState<string>('');
 
@@ -11,6 +11,7 @@ export default function useThiSinh() {
     };
 
     const handleUpload = (file: File) => {
+        // Handle file upload logic
         console.log('File uploaded:', file);
     };
 
@@ -28,4 +29,4 @@ export default function useThiSinh() {
         handleUpload,
         handleSubmit,
     };
-}
+};
