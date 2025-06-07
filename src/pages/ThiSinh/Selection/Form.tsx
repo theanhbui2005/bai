@@ -5,7 +5,11 @@ import { useAdmissionModel } from '@/models/selectionOptions';
 const { Title } = Typography;
 const { Option } = Select;
 
-const SelectionForm = () => {
+interface SelectionFormProps {
+  onComplete: (school: any, major: any, combinations: any[]) => void;
+}
+
+const SelectionForm: React.FC<SelectionFormProps> = ({ onComplete }) => {
   const {
     schools,
     majors,
@@ -27,6 +31,8 @@ const SelectionForm = () => {
         ngành: selectedMajor?.ten_nganh,
         tổ_hợp: selectedCombinations,
       });
+
+      onComplete(selectedSchool, selectedMajor, combinations);
 
       // Optional: lưu vào localStorage
       localStorage.setItem(

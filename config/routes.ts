@@ -36,12 +36,6 @@
 		component: './RandomUser',
 		icon: 'ArrowsAltOutlined',
 	},
-	{
-		path: '/selectionOptions',
-		name: 'selectionOptions ',
-		component: './selectionOptions',
-		icon: 'ArrowsAltOutlined',
-	},
 
 	// Quản trị viên
 	{

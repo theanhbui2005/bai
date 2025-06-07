@@ -1,37 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, message, Table, Modal, Card, Select, Upload } from 'antd';
+import { Button, Form, message, Table, Card } from 'antd';
 import { useModel } from 'umi';
 import type { ThiSinh } from '@/models/ThiSinh/types';
 import SelectionForm from './Selection/Form';
 import FormThiSinh from './FormThiSinh';
-const { Option } = Select;
 
 const ThiSinhPage: React.FC = () => {
     const { data, getDataThiSinh, handleUpload, handleSubmit, status, setStatus } = useModel('thisinh');
-    
+    const [currentStep, setCurrentStep] = useState<'selection' | 'personal' | 'complete'>('selection');
     const [form] = Form.useForm();
-    const [modalVisible, setModalVisible] = useState(false);
-    const [latestSubmission, setLatestSubmission] = useState<ThiSinh | null>(null);
-    const [showForm, setShowForm] = useState(false);
-    const [selectedSchool, setSelectedSchool] = useState<any>(null);
-    const [selectedMajor, setSelectedMajor] = useState<any>(null);
-    const [selectedCombinations, setSelectedCombinations] = useState<any[]>([]);
+    const [admissionData, setAdmissionData] = useState<{
+        school: any;
+        major: any;
+        combinations: any[];
+    } | null>(null);
 
     useEffect(() => {
         getDataThiSinh();
     }, []);
 
-    const uploadProps = {
-        beforeUpload: (file: File) => {
-            const isAllowed = ['application/pdf', 'image/jpeg', 'image/png'].includes(file.type);
-            if (!isAllowed) {
-                message.error('Chỉ chấp nhận file PDF, JPEG, PNG!');
-                return Upload.LIST_IGNORE;
-            }
-            handleUpload(file);
-            return false;
-        },
-        maxCount: 1,
+    const onSelectionComplete = (school: any, major: any, combinations: any[]) => {
+        setAdmissionData({ school, major, combinations });
+        setCurrentStep('personal');
+    };
+
+    const onFinish = (values: any) => {
+        if (!admissionData) return;
+
+        const submissionData = {
+            ...values,
+            truong: admissionData.school.ten_truong,
+            nganh: admissionData.major.ten_nganh,
+            toHop: admissionData.combinations.map(c => c.ma_to_hop).join(', '),
+            trangThai: 'Đã gửi'
+        };
+        
+        handleSubmit(submissionData);
+        message.success('Đăng ký xét tuyển thành công!');
+        form.resetFields();
+        setCurrentStep('complete');
     };
 
     const columns = [
@@ -57,81 +64,55 @@ const ThiSinhPage: React.FC = () => {
         },
     ];
 
-    const getStatusCount = () => {
-        const daguiCount = data.filter(item => item.trangThai === 'Đã gửi').length;
-        const dangxulyCount = data.filter(item => item.trangThai === 'Đang xử lý').length;
-        const tuchoiCount = data.filter(item => item.trangThai === 'Từ chối').length;
-        return { daguiCount, dangxulyCount, tuchoiCount };
-    };
+    const renderContent = () => {
+        switch (currentStep) {
+            case 'selection':
+                return <SelectionForm onComplete={onSelectionComplete} />;
 
-    const onSelectionComplete = (school: any, major: any, combinations: any[]) => {
-        setSelectedSchool(school);
-        setSelectedMajor(major);
-        setSelectedCombinations(combinations);
-        setShowForm(true);
-    };
+            case 'personal':
+                return (
+                    <>
+                        <Card title="Thông tin đăng ký" style={{ marginBottom: 16 }}>
+                            <p><strong>Trường:</strong> {admissionData?.school.ten_truong}</p>
+                            <p><strong>Ngành:</strong> {admissionData?.major.ten_nganh}</p>
+                            <p><strong>Tổ hợp xét tuyển:</strong> {admissionData?.combinations.map(c => c.ma_to_hop).join(', ')}</p>
+                            <Button onClick={() => setCurrentStep('selection')}>Chọn lại</Button>
+                        </Card>
 
-    const onFinish = (values: any) => {
-        const submissionData = {
-            ...values,
-            truong: selectedSchool?.ten_truong,
-            nganh: selectedMajor?.ten_nganh,
-            toHop: selectedCombinations.map(c => c.ma_to_hop).join(', ')
-        };
-        
-        handleSubmit(submissionData);
-        message.success('Gửi hồ sơ thành công!');
-        setModalVisible(false);
-        form.resetFields();
-        setStatus('Đã gửi');
-        setLatestSubmission({ ...submissionData, trangThai: 'Đã gửi' });
-        getDataThiSinh();
-        setShowForm(false);
-    };
+                        <Card title="Thông tin thí sinh">
+                            <FormThiSinh
+                                form={form}
+                                onFinish={onFinish}
+                                uploadProps={{
+                                    beforeUpload: handleUpload,
+                                    maxCount: 1,
+                                }}
+                            />
+                        </Card>
+                    </>
+                );
 
-    return (
-        <div style={{ padding: 24 }}>
-            {!showForm ? (
-                <SelectionForm onComplete={onSelectionComplete} />
-            ) : (
-                <>
-                    <Card style={{ marginBottom: 16 }}>
-                        <h3>Thông tin đăng ký</h3>
-                        <p><strong>Trường:</strong> {selectedSchool?.ten_truong}</p>
-                        <p><strong>Ngành:</strong> {selectedMajor?.ten_nganh}</p>
-                        <p><strong>Tổ hợp xét tuyển:</strong> {selectedCombinations.map(c => c.ma_to_hop).join(', ')}</p>
-                        <Button onClick={() => setShowForm(false)}>Quay lại chọn ngành</Button>
-                    </Card>
-
-                    <Button type="primary" onClick={() => setModalVisible(true)} style={{ marginBottom: 16 }}>
-                        Nhập hồ sơ thí sinh
-                    </Button>
-                    
-                    <Table 
-                        columns={columns} 
-                        dataSource={data} 
-                        rowKey="cmnd" 
-                        pagination={false}
-                        scroll={{ x: 'max-content', y: 'calc(100vh - 200px)' }}
-                    />
-
-                    <Modal
-                        title="Nhập thông tin thí sinh"
-                        visible={modalVisible}
-                        onCancel={() => setModalVisible(false)}
-                        footer={null}
-                        destroyOnClose
-                    >
-                        <FormThiSinh
-                            form={form}
-                            onFinish={onFinish}
-                            uploadProps={uploadProps}
+            case 'complete':
+                return (
+                    <>
+                        <Card style={{ marginBottom: 16 }}>
+                            <Button type="primary" onClick={() => setCurrentStep('selection')}>
+                                Đăng ký xét tuyển mới
+                            </Button>
+                        </Card>
+                        <Table
+                            columns={columns}
+                            dataSource={data}
+                            rowKey="cmnd"
+                            pagination={false}
+                            scroll={{ x: 'max-content', y: 'calc(100vh - 200px)' }}
                         />
-                    </Modal>
-                </>
-            )}
-        </div>
-    );
+                    </>
+                );
+        }
+    };
+
+    return <div style={{ padding: 24 }}>{renderContent()}</div>;
 };
 
 export default ThiSinhPage;

@@ -22,6 +22,31 @@ export interface HoSoType {
 const API_URL = '/api';
 
 /**
+ * Nộp hồ sơ mới
+ */
+export const submitApplication = async (data: Omit<HoSoType, 'id' | 'ngay_gui' | 'trang_thai'>) => {
+  try {
+    const response = await axios.post(`${API_URL}/applications`, {
+      ...data,
+      ngay_gui: new Date().toISOString(),
+      trang_thai: 'cho_duyet'
+    });
+    
+    return {
+      success: true,
+      message: 'Nộp hồ sơ thành công',
+      data: response.data
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Có lỗi xảy ra khi nộp hồ sơ',
+      data: null
+    };
+  }
+};
+
+/**
  * Lấy danh sách tất cả hồ sơ
  */
 export const getAllApplications = async () => {
@@ -108,4 +133,24 @@ export const updateApplicationStatus = async (
       data: null,
     };
   }
-}; 
+};
+
+/**
+ * Lấy danh sách hồ sơ theo thí sinh
+ */
+export const getApplicationsByStudent = async (studentId: number) => {
+  try {
+    const response = await axios.get(`${API_URL}/applications?student_id=${studentId}`);
+    return {
+      success: true,
+      message: 'Lấy danh sách hồ sơ thành công',
+      data: response.data as HoSoType[]
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Có lỗi xảy ra khi lấy danh sách hồ sơ',
+      data: []
+    };
+  }
+};

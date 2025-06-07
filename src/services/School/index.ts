@@ -17,18 +17,11 @@ const API_URL = '/api';
  */
 export const getAllSchools = async () => {
   try {
-    const response = await axios.get(`${API_URL}/truong`);
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: response.data.data as TruongType[],
-      };
-    }
+    const response = await axios.get(`${API_URL}/schools`);
     return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi lấy danh sách trường',
-      data: [],
+      success: true,
+      message: 'Lấy danh sách trường thành công',
+      data: response.data as TruongType[],
     };
   } catch (error) {
     return {
@@ -145,4 +138,4 @@ export const deleteSchool = async (id: number) => {
       data: null,
     };
   }
-}; 
+};
