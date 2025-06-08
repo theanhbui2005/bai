@@ -111,37 +111,49 @@ const ApplicationManagement: React.FC = () => {
       const result = await updateApplicationStatus(selectedApplication.id, newStatus, values.note);
       
       if (result.success) {
-        message.success(result.message);
+        // Đóng modal trước khi gửi email để tránh chờ đợi
+        setStatusModalVisible(false);
+        
+        // Hiển thị thông báo đang gửi email
+        const emailKey = 'sending_email';
+        message.loading({ content: 'Đang gửi email thông báo...', key: emailKey });
 
-        // Gửi email giả lập
+        // Gửi email
         if (selectedApplication.email) {
           const schoolName = schoolMap[selectedApplication.truong_id] || `Trường ID: ${selectedApplication.truong_id}`;
           const majorName = nganhMap[selectedApplication.nganh_id] || `Ngành ID: ${selectedApplication.nganh_id}`;
 
-          if (newStatus === 'da_duyet') {
-            // Gọi service gửi email chấp nhận
-            sendApprovalEmail(
-              selectedApplication.email,
-              selectedApplication.ho_ten,
-              schoolName,
-              majorName,
-              selectedApplication.diem_thi,
-              values.note
-            );
-          } else if (newStatus === 'tu_choi') {
-            // Gọi service gửi email từ chối
-            sendRejectionEmail(
-              selectedApplication.email,
-              selectedApplication.ho_ten,
-              schoolName,
-              majorName,
-              selectedApplication.diem_thi,
-              values.note
-            );
+          try {
+            if (newStatus === 'da_duyet') {
+              // Gọi service gửi email chấp nhận
+              await sendApprovalEmail(
+                selectedApplication.email,
+                selectedApplication.ho_ten,
+                schoolName,
+                majorName,
+                selectedApplication.diem_thi,
+                values.note
+              );
+              message.success({ content: 'Đã gửi email thông báo đến thí sinh!', key: emailKey, duration: 2 });
+            } else if (newStatus === 'tu_choi') {
+              // Gọi service gửi email từ chối
+              await sendRejectionEmail(
+                selectedApplication.email,
+                selectedApplication.ho_ten,
+                schoolName,
+                majorName,
+                selectedApplication.diem_thi,
+                values.note
+              );
+              message.success({ content: 'Đã gửi email thông báo đến thí sinh!', key: emailKey, duration: 2 });
+            }
+          } catch (error) {
+            console.error("Lỗi khi gửi email:", error);
+            message.error({ content: 'Không thể gửi email thông báo!', key: emailKey, duration: 2 });
           }
         }
 
-        setStatusModalVisible(false);
+        message.success(result.message);
         fetchData(); // Tải lại dữ liệu sau khi cập nhật
       } else {
         message.error(result.message);

@@ -510,16 +510,16 @@
       "ngay_sinh": "2007-09-28",
       "gioi_tinh": "Nam",
       "so_cccd": "012345678905",
-      "email": "hoange@example.com",
+      "email": "longnguyen120901@gmail.com",
       "sdt": "0912345682",
       "diem_thi": 22.8,
       "doi_tuong_uu_tien": "KV2",
       "truong_id": 4,
       "nganh_id": 11,
       "file_minh_chung": "uploads/hoc_ba_105.pdf,uploads/cccd_105.jpg",
-      "trang_thai": "cho_duyet",
+      "trang_thai": "tu_choi",
       "ngay_gui": "2025-05-18T11:20:00",
-      "ghi_chu": "Hồ sơ đã được reset về trạng thái chờ duyệt"
+      "ghi_chu": "chia buon nha"
     },
     {
       "id": 106,
@@ -527,16 +527,16 @@
       "ngay_sinh": "2007-02-17",
       "gioi_tinh": "Nữ",
       "so_cccd": "012345678906",
-      "email": "ngof@example.com",
+      "email": "phamky136@gmail",
       "sdt": "0912345683",
       "diem_thi": 21.5,
       "doi_tuong_uu_tien": "KV3",
       "truong_id": 5,
       "nganh_id": 14,
       "file_minh_chung": "uploads/hoc_ba_106.pdf,uploads/cccd_106.jpg",
-      "trang_thai": "da_duyet",
+      "trang_thai": "cho_duyet",
       "ngay_gui": "2025-05-19T13:15:00",
-      "ghi_chu": "quas toot"
+      "ghi_chu": "Hồ sơ đã được reset về trạng thái chờ duyệt"
     }
   ],
   "admin": [

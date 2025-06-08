@@ -88,6 +88,12 @@
 				icon: 'FileOutlined',
 			},
 			{
+				path: '/admin/email-settings',
+				name: 'Cấu hình email',
+				component: './Admin/EmailSettings',
+				icon: 'MailOutlined',
+			},
+			{
 				path: '/admin',
 				redirect: '/admin/dashboard',
 			},

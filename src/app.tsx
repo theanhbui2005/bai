@@ -16,6 +16,8 @@ import NotFoundContent from './pages/exception/404';
 import type { IInitialState } from './services/base/typing';
 import './styles/global.less';
 import { currentRole } from './utils/ip';
+import emailjs from '@emailjs/browser';
+import { initEmailService } from './services/Mail';
 
 /**  loading */
 export const initialStateConfig = {
@@ -30,6 +32,22 @@ export async function getInitialState(): Promise<IInitialState> {
 	// Kiểm tra role từ localStorage để phân quyền
 	const adminInfo = localStorage.getItem('adminInfo');
 	const userInfo = localStorage.getItem('userInfo');
+	
+	// Khởi tạo EmailJS
+	try {
+		const emailSettings = localStorage.getItem('emailjs_settings');
+		if (emailSettings) {
+			const settings = JSON.parse(emailSettings);
+			if (settings.user_id) {
+				emailjs.init(settings.user_id);
+				console.log('EmailJS đã được khởi tạo từ app.tsx với ID:', settings.user_id);
+			}
+		}
+		// Sử dụng hàm khởi tạo từ service
+		initEmailService();
+	} catch (error) {
+		console.error('Lỗi khi khởi tạo EmailJS:', error);
+	}
 	
 	return {
 		permissionLoading: true,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Card, Row, Col, Button, Spin } from 'antd';
-import { BankOutlined, FileOutlined, LogoutOutlined } from '@ant-design/icons';
+import { BankOutlined, FileOutlined, LogoutOutlined, MailOutlined } from '@ant-design/icons';
 import { useModel, history } from 'umi';
 import styles from './index.less';
 
@@ -32,6 +32,10 @@ const AdminDashboard: React.FC = () => {
   const goToApplicationManagement = () => {
     history.push('/admin/applications');
   };
+  
+  const goToEmailSettings = () => {
+    history.push('/admin/email-settings');
+  };
 
   if (loading) {
     return (
@@ -58,7 +62,7 @@ const AdminDashboard: React.FC = () => {
       ]}
     >
       <Row gutter={24}>
-        <Col span={12}>
+        <Col span={8}>
           <Card 
             className={styles.dashboardCard} 
             title="Quản lý trường"
@@ -77,7 +81,7 @@ const AdminDashboard: React.FC = () => {
             </Button>
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={8}>
           <Card 
             className={styles.dashboardCard} 
             title="Quản lý hồ sơ"
@@ -93,6 +97,25 @@ const AdminDashboard: React.FC = () => {
               onClick={goToApplicationManagement}
             >
               Quản lý hồ sơ
+            </Button>
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card 
+            className={styles.dashboardCard} 
+            title="Cấu hình email"
+            extra={<MailOutlined style={{ fontSize: '24px', color: '#1890ff' }} />}
+          >
+            <p>Cấu hình dịch vụ gửi email thông báo</p>
+            <p>Kết nối với EmailJS để gửi email tự động</p>
+            <p>Kiểm tra gửi email thử nghiệm</p>
+            <Button 
+              type="primary" 
+              size="large" 
+              style={{ marginTop: 16 }}
+              onClick={goToEmailSettings}
+            >
+              Cấu hình email
             </Button>
           </Card>
         </Col>
