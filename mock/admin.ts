@@ -52,6 +52,34 @@ export default {
       res.status(404).json({ message: 'Admin not found' });
     }
   },
+  
+  // API kiểm tra đăng nhập admin trực tiếp
+  'POST /api/admin/login': (req: Request, res: Response) => {
+    console.log("Nhận yêu cầu đăng nhập admin:", req.body);
+    const db = readDB();
+    const { username, password } = req.body;
+    
+    // Tìm admin với username và password tương ứng
+    const admin = db.admin.find((a: any) => a.username === username && a.password === password);
+    
+    console.log("Kết quả tìm kiếm admin:", admin ? "Tìm thấy" : "Không tìm thấy");
+    
+    if (admin) {
+      // Bỏ password khi trả về kết quả
+      const { password, ...adminInfo } = admin;
+      
+      res.status(200).json({
+        success: true,
+        message: 'Đăng nhập admin thành công',
+        data: adminInfo
+      });
+    } else {
+      res.status(401).json({
+        success: false,
+        message: 'Tên đăng nhập hoặc mật khẩu không đúng'
+      });
+    }
+  },
 
   // API trường đại học
   'GET /api/truong': (req: Request, res: Response) => {
@@ -502,7 +530,7 @@ export default {
     }
   },
 
-  // API lấy chi tiết ngành theo ID
+  // API lấy thông tin chi tiết ngành theo ID
   'GET /api/nganh/:id': (req: Request, res: Response) => {
     const db = readDB();
     const nganhId = parseInt(req.params.id);

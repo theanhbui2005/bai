@@ -27,8 +27,13 @@ export const initialStateConfig = {
  * // Tobe removed
  * */
 export async function getInitialState(): Promise<IInitialState> {
+	// Kiểm tra role từ localStorage để phân quyền
+	const adminInfo = localStorage.getItem('adminInfo');
+	const userInfo = localStorage.getItem('userInfo');
+	
 	return {
 		permissionLoading: true,
+		userRole: adminInfo ? 'admin' : userInfo ? 'student' : null,
 	};
 }
 
@@ -82,19 +87,52 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 		footerRender: () => <Footer />,
 
 		onPageChange: () => {
+			const { location } = history;
+			const { pathname } = location;
+			
+			// Kiểm tra role từ localStorage
+			const adminInfo = localStorage.getItem('adminInfo');
+			const userInfo = localStorage.getItem('userInfo');
+			const isAdmin = adminInfo !== null;
+			const isStudent = userInfo !== null;
+			
+			// Kiểm tra các trang cần đăng nhập
+			const needsAuth = !['/user/login'].includes(pathname);
+			
+			// Nếu không đăng nhập và đang cố truy cập trang cần đăng nhập
+			if (!isAdmin && !isStudent && needsAuth) {
+				history.push('/user/login');
+				return;
+			}
+			
+			// Nếu đăng nhập dưới quyền thí sinh nhưng cố truy cập trang admin
+			if (!isAdmin && isStudent && pathname.startsWith('/admin')) {
+				history.push('/403');
+				return;
+			}
+			
+			// Kiểm tra đường dẫn mặc định
+			if (pathname === '/') {
+				if (isAdmin) {
+					history.push('/admin/dashboard');
+				} else if (isStudent) {
+					history.push('/dashboard');
+				} else {
+					history.push('/user/login');
+				}
+			}
+			
+			// Các kiểm tra khác
 			if (initialState?.currentUser) {
-				const { location } = history;
-				const isUncheckPath = unCheckPermissionPaths.some((path) => window.location.pathname.includes(path));
+				const isUncheckPath = unCheckPermissionPaths.some((path) => pathname.includes(path));
 
-				if (location.pathname === '/') {
-					history.replace('/dashboard');
-				} else if (
+				if (
 					!isUncheckPath &&
 					currentRole &&
 					initialState?.authorizedPermissions?.length &&
 					!initialState?.authorizedPermissions?.find((item) => item.rsname === currentRole)
 				)
-					history.replace('/403');
+					history.push('/403');
 			}
 		},
 

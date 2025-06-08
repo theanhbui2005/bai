@@ -5,10 +5,31 @@ import type { IInitialState } from './services/base/typing';
  * @see https://umijs.org/zh-CN/plugins/plugin-access
  * */
 export default function access(initialState: IInitialState) {
-	// const scopes = initialState.authorizedPermissions?.find((item) => item.rsname === currentRole)?.scopes;
+	// Lấy scopes từ initialState
 	const scopes = initialState.authorizedPermissions?.map((item) => item.scopes).flat();
+	
+	// Lấy thông tin từ localStorage để phân quyền
+	const userInfo = localStorage.getItem('adminInfo') || localStorage.getItem('userInfo');
+	let role = null;
+	
+	if (userInfo) {
+		const user = JSON.parse(userInfo);
+		role = user.role;
+	}
 
 	return {
+		// Chỉ admin mới có quyền truy cập trang admin
+		adminOnly: role === 'admin',
+		
+		// Chỉ sinh viên mới có quyền truy cập trang sinh viên
+		studentOnly: role === 'student',
+		
+		// Các quyền khác từ mã nguồn gốc
+		canAdmin: scopes && scopes.includes('admin'),
+		user: scopes && scopes.includes('user'),
+		admin: scopes && scopes.includes('admin'),
+		accessFilter: (route: any) => scopes?.includes(route?.maChucNang) || false,
+		manyAccessFilter: (route: any) => route?.listChucNang?.some((role: string) => scopes?.includes(role)) || false,
 		// canBoQLKH: token && vaiTro && vaiTro === 'can_bo_qlkh',
 		// lanhDao: token && vaiTro && vaiTro === 'lanh_dao',
 		// sinhVienVaNhanVien: token && vaiTro && ['nhan_vien', 'sinh_vien'].includes(vaiTro),
@@ -27,23 +48,6 @@ export default function access(initialState: IInitialState) {
 		//     (vaiTro === 'Admin' || vaiTro === 'quan_tri' || vaiTro === 'nhan_vien')) ||
 		//   false,
 		// guest: (token && ((vaiTro && vaiTro === 'Guest') || !vaiTro)) || false,
-		accessFilter: (route: any) => scopes?.includes(route?.maChucNang) || false,
-		manyAccessFilter: (route: any) => route?.listChucNang?.some((role: string) => scopes?.includes(role)) || false,
-		// adminAccessFilter: (route: any) =>
-		//   (token && vaiTro && vaiTro === 'Admin') ||
-		//   initialState?.phanNhom?.nhom_vai_tro?.includes(route?.maChucNang) ||
-		//   false,
-		// adminManyAccessFilter: (route: any) =>
-		//   (token && vaiTro && vaiTro === 'Admin') ||
-		//   route?.listChucNang?.filter((role: string) =>
-		//     initialState?.phanNhom?.nhom_vai_tro?.includes(role),
-		//   )?.length ||
-		//   false,
-		// nhanVienAccessFilter: (route: any) =>
-		//   (token && vaiTro && vaiTro === 'nhan_vien') ||
-		//   (token && vaiTro && vaiTro === 'Admin') ||
-		//   initialState?.phanNhom?.nhom_vai_tro?.includes(route?.maChucNang) ||
-		//   false,
 		// routeFilter: (route: any) =>
 		//   (token && vaiTro && vaiTro === 'Admin') ||
 		//   (token && vaiTro && initialState?.phanNhom?.nhom_vai_tro?.includes(route?.maChucNang)) ||

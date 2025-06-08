@@ -45,6 +45,7 @@ export interface IInitialState {
 	currentUser?: Login.IUser;
 	authorizedPermissions?: Login.IPermission[];
 	permissionLoading?: boolean;
+	userRole?: 'admin' | 'student' | null;
 }
 
 export interface ISetting {

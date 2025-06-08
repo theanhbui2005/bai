@@ -1,31 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Row, Col, Button } from 'antd';
+import { Card, Row, Col, Button, Spin } from 'antd';
 import { BankOutlined, FileOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useModel, history } from 'umi';
 import styles from './index.less';
 
 const AdminDashboard: React.FC = () => {
-  const { adminInfo, isLoggedIn, checkLoginStatus, logout } = useModel('admin');
+  const { userInfo, userRole, isLoggedIn, checkLoginStatus, logout } = useModel('auth');
+  const [loading, setLoading] = useState(true);
 
   // Kiểm tra đăng nhập
   useEffect(() => {
-    const loggedIn = checkLoginStatus();
-    if (!loggedIn) {
-      history.push('/admin/login');
+    const { loggedIn, role } = checkLoginStatus();
+    if (!loggedIn || role !== 'admin') {
+      history.push('/user/login');
+    } else {
+      // Đã đăng nhập và là admin, hiển thị dashboard
+      setLoading(false);
     }
   }, []);
 
-  // Nếu chưa đăng nhập thì chuyển về trang đăng nhập
-  useEffect(() => {
-    if (!isLoggedIn) {
-      history.push('/admin/login');
-    }
-  }, [isLoggedIn]);
-
+  // Xử lý đăng xuất
   const handleLogout = () => {
     logout();
-    history.push('/admin/login');
   };
 
   const goToSchoolManagement = () => {
@@ -36,10 +33,18 @@ const AdminDashboard: React.FC = () => {
     history.push('/admin/applications');
   };
 
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Spin size="large" tip="Đang tải..." />
+      </div>
+    );
+  }
+
   return (
     <PageContainer
       title="Trang quản trị hệ thống"
-      subTitle={`Xin chào, ${adminInfo?.ho_ten || 'Quản trị viên'}`}
+      subTitle={`Xin chào, ${userInfo?.ho_ten || 'Quản trị viên'}`}
       extra={[
         <Button
           key="1"

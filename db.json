@@ -34,41 +34,6 @@
       "ten_truong": "Đại học Công Nghệ",
       "dia_chi": "Khu phố 6, Phường Linh Trung, Thủ Đức, TP.HCM",
       "loai_truong": "Công lập"
-    },
-    {
-      "id": 6,
-      "ma_truong": "3432",
-      "ten_truong": "23432",
-      "dia_chi": "23432423",
-      "loai_truong": "Công lập"
-    },
-    {
-      "id": 7,
-      "ma_truong": "4234",
-      "ten_truong": "3423",
-      "dia_chi": "423",
-      "loai_truong": "Dân lập"
-    },
-    {
-      "id": 8,
-      "ma_truong": "3432",
-      "ten_truong": "4234",
-      "dia_chi": "324234",
-      "loai_truong": "Công lập"
-    },
-    {
-      "id": 9,
-      "ma_truong": "4324",
-      "ten_truong": "234",
-      "dia_chi": "32423",
-      "loai_truong": "Công lập"
-    },
-    {
-      "id": 10,
-      "ma_truong": "324",
-      "ten_truong": "2342",
-      "dia_chi": "2342423",
-      "loai_truong": "Dân lập"
     }
   ],
   "nganh": [
@@ -569,9 +534,9 @@
       "truong_id": 5,
       "nganh_id": 14,
       "file_minh_chung": "uploads/hoc_ba_106.pdf,uploads/cccd_106.jpg",
-      "trang_thai": "cho_duyet",
+      "trang_thai": "da_duyet",
       "ngay_gui": "2025-05-19T13:15:00",
-      "ghi_chu": "Hồ sơ đã được reset về trạng thái chờ duyệt"
+      "ghi_chu": "quas toot"
     }
   ],
   "admin": [

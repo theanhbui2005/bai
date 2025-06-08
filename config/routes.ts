@@ -37,30 +37,43 @@
 		icon: 'ArrowsAltOutlined',
 	},
 
+	// Trang Sinh Viên
+	{
+		path: '/student',
+		name: 'Thí sinh',
+		icon: 'UserOutlined',
+		access: 'studentOnly',
+		routes: [
+			{
+				path: '/student/profile',
+				name: 'Thông tin hồ sơ',
+				component: './Student',
+				icon: 'ProfileOutlined',
+			},
+			{
+				path: '/student',
+				redirect: '/student/profile',
+			},
+		],
+	},
+
 	// Quản trị viên
 	{
 		path: '/admin',
 		name: 'Quản trị viên',
 		icon: 'UserOutlined',
+		access: 'adminOnly',
 		routes: [
-			{
-				path: '/admin/login',
-				name: 'Đăng nhập',
-				component: './Admin/Login',
-				hideInMenu: true,
-			},
 			{
 				path: '/admin/dashboard',
 				name: 'Dashboard',
 				component: './Admin/Dashboard',
-				hideInMenu: true,
 			},
 			{
 				path: '/admin/schools',
 				name: 'Quản lý trường',
 				component: './Admin/School',
 				icon: 'BankOutlined',
-				hideInMenu: true,
 			},
 			{
 				path: '/admin/schools/:id',
@@ -73,11 +86,10 @@
 				name: 'Quản lý hồ sơ',
 				component: './Admin/Application',
 				icon: 'FileOutlined',
-				hideInMenu: true,
 			},
 			{
 				path: '/admin',
-				redirect: '/admin/login',
+				redirect: '/admin/dashboard',
 			},
 		],
 	},
@@ -120,6 +132,7 @@
 	},
 	{
 		path: '/',
+		redirect: '/user/login',
 	},
 	{
 		path: '/403',
