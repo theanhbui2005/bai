@@ -170,13 +170,15 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 		),
 
 		childrenRender: (dom) => (
-			<OIDCBounder>
-				<ErrorBoundary>
-					{/* <TechnicalSupportBounder> */}
-					<OneSignalBounder>{dom}</OneSignalBounder>
-					{/* </TechnicalSupportBounder> */}
-				</ErrorBoundary>
-			</OIDCBounder>
+			<ErrorBoundary>
+				{process.env.NODE_ENV === 'production' ? (
+					<OIDCBounder>
+						<OneSignalBounder>{dom}</OneSignalBounder>
+					</OIDCBounder>
+				) : (
+					<>{dom}</>
+				)}
+			</ErrorBoundary>
 		),
 		menuHeaderRender: undefined,
 		...initialState?.settings,

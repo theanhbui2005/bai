@@ -4,6 +4,7 @@ import defaultSettings from './defaultSettings';
 import routes from './routes';
 import proxy from './proxy';
 const { REACT_APP_ENV } = process.env;
+type ProxyEnv = 'dev' | 'test' | 'pre';
 
 export default defineConfig({
 	hash: true,
@@ -41,8 +42,8 @@ export default defineConfig({
 	// https://umijs.org/plugins/plugin-esbuild
 	esbuild: {},
 	title: false,
-	ignoreMomentLocale: true,
-	proxy: proxy[REACT_APP_ENV || 'dev'],
+	proxy: proxy[(REACT_APP_ENV as ProxyEnv) || 'dev'],
+	
 	manifest: {
 		basePath: '/',
 	},

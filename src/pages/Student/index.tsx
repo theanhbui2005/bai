@@ -2,56 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Card, Row, Col, Typography, Descriptions, Tag, Steps, Button, message, Alert, Spin } from 'antd';
 import { useModel, history } from 'umi';
-import axios from 'axios';
-import { 
-  UserOutlined, 
-  FileDoneOutlined, 
-  CheckCircleOutlined, 
+import { getHoSo, getTruongById, getNganhById } from '@/services/Student';
+import {
+  UserOutlined,
+  FileDoneOutlined,
+  CheckCircleOutlined,
   ClockCircleOutlined,
   FileSearchOutlined,
   CloseCircleOutlined,
   LogoutOutlined
 } from '@ant-design/icons';
 
+import type { HoSoType, TruongType, NganhType } from '@/types/student';
 const { Title, Paragraph } = Typography;
 const { Step } = Steps;
 
-// Interface cho hồ sơ thí sinh
-interface HoSoType {
-  id: number;
-  ho_ten: string;
-  ngay_sinh: string;
-  gioi_tinh: string;
-  so_cccd: string;
-  email: string;
-  sdt: string;
-  diem_thi: number;
-  doi_tuong_uu_tien: string;
-  truong_id: number;
-  nganh_id: number;
-  file_minh_chung: string;
-  trang_thai: string;
-  ngay_gui: string;
-  ghi_chu?: string;
-}
 
-// Interface cho thông tin trường
-interface TruongType {
-  id: number;
-  ma_truong: string;
-  ten_truong: string;
-  dia_chi: string;
-  loai_truong: string;
-}
-
-// Interface cho thông tin ngành
-interface NganhType {
-  id: number;
-  truong_id: number;
-  ma_nganh: string;
-  ten_nganh: string;
-  mo_ta: string;
-}
 
 const StudentPage: React.FC = () => {
   const { userInfo, isLoggedIn, checkLoginStatus, logout } = useModel('auth');
@@ -79,10 +45,9 @@ const StudentPage: React.FC = () => {
   const fetchStudentData = async (user = userInfo) => {
     setLoading(true);
     try {
-      // Lấy danh sách hồ sơ
-      const response = await axios.get('/api/ho-so');
-      if (response.data && response.data.data) {
-        const hoSoList = response.data.data;
+      const response = await getHoSo();
+      if (response.success && response.data) {
+        const hoSoList = response.data;
         
         // Tìm hồ sơ của thí sinh hiện tại (dựa vào email hoặc id)
         const studentRecord = hoSoList.find((item: any) => 
@@ -95,17 +60,17 @@ const StudentPage: React.FC = () => {
           
           // Lấy thông tin trường
           if (studentRecord.truong_id) {
-            const truongResponse = await axios.get(`/api/truong/${studentRecord.truong_id}`);
-            if (truongResponse.data && truongResponse.data.success) {
-              setTruong(truongResponse.data.data);
+            const truongResponse = await getTruongById(studentRecord.truong_id);
+            if (truongResponse.success) {
+              setTruong(truongResponse.data);
             }
           }
           
           // Lấy thông tin ngành
           if (studentRecord.nganh_id) {
-            const nganhResponse = await axios.get(`/api/nganh/${studentRecord.nganh_id}`);
-            if (nganhResponse.data && nganhResponse.data.success) {
-              setNganh(nganhResponse.data.data);
+            const nganhResponse = await getNganhById(studentRecord.nganh_id);
+            if (nganhResponse.success) {
+              setNganh(nganhResponse.data);
             }
           }
         } else if (retryCount < 3) {
@@ -248,4 +213,4 @@ const StudentPage: React.FC = () => {
   );
 };
 
-export default StudentPage; 
+export default StudentPage;

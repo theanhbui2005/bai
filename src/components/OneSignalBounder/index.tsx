@@ -1,11 +1,17 @@
 import { initOneSignal } from '@/services/base/api';
 import { AppModules } from '@/services/base/constant';
 import { currentRole, oneSignalClient, oneSignalRole } from '@/utils/ip';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 import OneSignal from 'react-onesignal';
 
-const OneSignalBounder = (props: { children: React.ReactNode }) => {
+declare global {
+	interface Window {
+		OneSignal: any[];
+	}
+}
+
+const OneSignalBounder: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [oneSignalId, setOneSignalId] = useState<string | null | undefined>();
 	const auth = useAuth();
 	const iframeSource = AppModules[oneSignalRole].url;
@@ -93,7 +99,22 @@ const OneSignalBounder = (props: { children: React.ReactNode }) => {
 		}
 	}, [oneSignalId, auth.user?.access_token]);
 
-	return <>{props.children}</>;
+	useEffect(() => {
+		// Only initialize in production environment and HTTPS
+		if (window.location.protocol === 'https:' && process.env.NODE_ENV === 'production') {
+			window.OneSignal = window.OneSignal || [];
+			// Your OneSignal initialization code here
+		}
+
+		return () => {
+			// Cleanup
+			if (window.OneSignal) {
+				window.OneSignal[0].off('subscriptionChange');
+			}
+		};
+	}, []);
+
+	return <>{children}</>;
 };
 
 export default OneSignalBounder;

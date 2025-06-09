@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// Interface cho hồ sơ
 export interface HoSoType {
   id: number;
   ho_ten: string;
@@ -19,25 +18,16 @@ export interface HoSoType {
   ghi_chu: string;
 }
 
-const API_URL = '/api';
-
 /**
  * Lấy danh sách tất cả hồ sơ
  */
 export const getAllApplications = async () => {
   try {
-    const response = await axios.get(`${API_URL}/ho-so`);
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: response.data.data as HoSoType[],
-      };
-    }
+    const response = await axios.get(`http://localhost:3000/ho_so`);
     return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi lấy danh sách hồ sơ',
-      data: [],
+      success: true,
+      message: 'Lấy danh sách hồ sơ thành công',
+      data: response.data as HoSoType[],
     };
   } catch (error) {
     return {
@@ -53,18 +43,11 @@ export const getAllApplications = async () => {
  */
 export const getApplicationById = async (id: number) => {
   try {
-    const response = await axios.get(`${API_URL}/ho-so/${id}`);
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: response.data.data as HoSoType,
-      };
-    }
+    const response = await axios.get(`http://localhost:3000/ho_so/${id}`);
     return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi lấy thông tin hồ sơ',
-      data: null,
+      success: true,
+      message: 'Lấy thông tin hồ sơ thành công',
+      data: response.data as HoSoType,
     };
   } catch (error) {
     return {
@@ -84,22 +67,14 @@ export const updateApplicationStatus = async (
   ghi_chu?: string
 ) => {
   try {
-    const response = await axios.patch(`${API_URL}/ho-so/${id}/status`, {
+    const response = await axios.patch(`http://localhost:3000/ho_so/${id}`, {
       trang_thai,
       ghi_chu: ghi_chu || '',
     });
-    
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: response.data.data as HoSoType,
-      };
-    }
     return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi cập nhật trạng thái hồ sơ',
-      data: null,
+      success: true,
+      message: 'Cập nhật trạng thái hồ sơ thành công',
+      data: response.data as HoSoType,
     };
   } catch (error) {
     return {
@@ -108,4 +83,4 @@ export const updateApplicationStatus = async (
       data: null,
     };
   }
-}; 
+};

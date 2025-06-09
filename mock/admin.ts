@@ -38,12 +38,12 @@ const writeDB = (data: any) => {
 
 export default {
   // API quản trị viên
-  'GET /api/admin': (req: Request, res: Response) => {
+  'GET //admin': (req: Request, res: Response) => {
     const db = readDB();
     res.status(200).json(db.admin);
   },
   
-  'GET /api/admin/1': (req: Request, res: Response) => {
+  'GET //admin/1': (req: Request, res: Response) => {
     const db = readDB();
     const admin = db.admin.find((item: any) => item.id === 1);
     if (admin) {
@@ -53,8 +53,8 @@ export default {
     }
   },
   
-  // API kiểm tra đăng nhập admin trực tiếp
-  'POST /api/admin/login': (req: Request, res: Response) => {
+  //  kiểm tra đăng nhập admin trực tiếp
+  'POST //admin/login': (req: Request, res: Response) => {
     console.log("Nhận yêu cầu đăng nhập admin:", req.body);
     const db = readDB();
     const { username, password } = req.body;
@@ -81,8 +81,8 @@ export default {
     }
   },
 
-  // API trường đại học
-  'GET /api/truong': (req: Request, res: Response) => {
+  //  trường đại học
+  'GET //truong': (req: Request, res: Response) => {
     const db = readDB();
     res.status(200).json({
       success: true,
@@ -91,7 +91,7 @@ export default {
     });
   },
   
-  'GET /api/truong/:id': (req: Request, res: Response) => {
+  'GET //truong/:id': (req: Request, res: Response) => {
     const db = readDB();
     const truongId = parseInt(req.params.id);
     const truong = db.truong.find((item: any) => item.id === truongId);
@@ -111,8 +111,8 @@ export default {
     }
   },
 
-  // API hồ sơ
-  'GET /api/ho-so': (req: Request, res: Response) => {
+  //  hồ sơ
+  'GET //ho_so': (req: Request, res: Response) => {
     const db = readDB();
     res.status(200).json({
       success: true,
@@ -121,8 +121,8 @@ export default {
     });
   },
   
-  // API lấy chi tiết hồ sơ theo ID
-  'GET /api/ho-so/:id': (req: Request, res: Response) => {
+  //  lấy chi tiết hồ sơ theo ID
+  'GET //ho_so/:id': (req: Request, res: Response) => {
     const db = readDB();
     const hoSoId = parseInt(req.params.id);
     const hoSo = db.ho_so.find((item: any) => item.id === hoSoId);
@@ -142,8 +142,8 @@ export default {
     }
   },
   
-  // API cập nhật trạng thái hồ sơ
-  'PATCH /api/ho-so/:id/status': (req: Request, res: Response) => {
+  //  cập nhật trạng thái hồ sơ
+  'PATCH //ho_so/:id/status': (req: Request, res: Response) => {
     const db = readDB();
     const hoSoId = parseInt(req.params.id);
     const { trang_thai, ghi_chu } = req.body;
@@ -183,8 +183,8 @@ export default {
     }
   },
 
-  // API lấy ngành đào tạo theo trường
-  'GET /api/nganh/truong/:truongId': (req: Request, res: Response) => {
+  //  lấy ngành đào tạo theo trường
+  'GET //nganh/truong/:truongId': (req: Request, res: Response) => {
     const db = readDB();
     const truongId = parseInt(req.params.truongId);
     
@@ -198,8 +198,8 @@ export default {
     });
   },
 
-  // API lấy tổ hợp xét tuyển theo ngành
-  'GET /api/to-hop/nganh/:nganhId': (req: Request, res: Response) => {
+  //  lấy tổ hợp xét tuyển theo ngành
+  'GET //to-hop/nganh/:nganhId': (req: Request, res: Response) => {
     const db = readDB();
     const nganhId = parseInt(req.params.nganhId);
     
@@ -213,7 +213,7 @@ export default {
     });
   },
 
-  'POST /api/login': (req: Request, res: Response) => {
+  'POST //login': (req: Request, res: Response) => {
     const db = readDB();
     const { username, password } = req.body;
     const admin = db.admin.find((item: any) => item.username === username);
@@ -240,8 +240,8 @@ export default {
     });
   },
 
-  // API thêm trường mới
-  'POST /api/truong': (req: Request, res: Response) => {
+  //  thêm trường mới
+  'POST //truong': (req: Request, res: Response) => {
     const db = readDB();
     const newSchool = req.body;
     
@@ -275,8 +275,8 @@ export default {
     }
   },
 
-  // API cập nhật thông tin trường
-  'PUT /api/truong/:id': (req: Request, res: Response) => {
+  //  cập nhật thông tin trường
+  'PUT //truong/:id': (req: Request, res: Response) => {
     const db = readDB();
     const truongId = parseInt(req.params.id);
     const updatedSchool = req.body;
@@ -315,8 +315,8 @@ export default {
     }
   },
 
-  // API xóa trường
-  'DELETE /api/truong/:id': (req: Request, res: Response) => {
+  //  xóa trường
+  'DELETE //truong/:id': (req: Request, res: Response) => {
     const db = readDB();
     const truongId = parseInt(req.params.id);
     
@@ -375,8 +375,8 @@ export default {
     }
   },
 
-  // API thêm ngành mới
-  'POST /api/nganh': (req: Request, res: Response) => {
+  //  thêm ngành mới
+  'POST //nganh': (req: Request, res: Response) => {
     const db = readDB();
     const newNganh = req.body;
     
@@ -420,8 +420,8 @@ export default {
     }
   },
 
-  // API cập nhật thông tin ngành
-  'PUT /api/nganh/:id': (req: Request, res: Response) => {
+  //  cập nhật thông tin ngành
+  'PUT //nganh/:id': (req: Request, res: Response) => {
     const db = readDB();
     const nganhId = parseInt(req.params.id);
     const updatedNganh = req.body;
@@ -470,8 +470,8 @@ export default {
     }
   },
 
-  // API xóa ngành
-  'DELETE /api/nganh/:id': (req: Request, res: Response) => {
+  //  xóa ngành
+  'DELETE //nganh/:id': (req: Request, res: Response) => {
     const db = readDB();
     const nganhId = parseInt(req.params.id);
     
@@ -530,8 +530,8 @@ export default {
     }
   },
 
-  // API lấy thông tin chi tiết ngành theo ID
-  'GET /api/nganh/:id': (req: Request, res: Response) => {
+  //  lấy thông tin chi tiết ngành theo ID
+  'GET //nganh/:id': (req: Request, res: Response) => {
     const db = readDB();
     const nganhId = parseInt(req.params.id);
     const nganh = db.nganh.find((item: any) => item.id === nganhId);
@@ -551,8 +551,8 @@ export default {
     }
   },
 
-  // API lấy tất cả tổ hợp xét tuyển
-  'GET /api/to-hop': (req: Request, res: Response) => {
+  //  lấy tất cả tổ hợp xét tuyển
+  'GET //to_hop_xet_tuyen': (req: Request, res: Response) => {
     const db = readDB();
     res.status(200).json({
       success: true,
@@ -561,8 +561,8 @@ export default {
     });
   },
 
-  // API thêm tổ hợp xét tuyển cho ngành
-  'POST /api/to-hop': (req: Request, res: Response) => {
+  //  thêm tổ hợp xét tuyển cho ngành
+  'POST //to_hop_xet_tuyen': (req: Request, res: Response) => {
     const db = readDB();
     const newToHop = req.body;
     
@@ -619,8 +619,8 @@ export default {
     }
   },
 
-  // API xóa tổ hợp xét tuyển
-  'DELETE /api/to-hop/:id': (req: Request, res: Response) => {
+  //  xóa tổ hợp xét tuyển
+  'DELETE //to_hop_xet_tuyen/id': (req: Request, res: Response) => {
     const db = readDB();
     const toHopId = parseInt(req.params.id);
     
@@ -655,8 +655,8 @@ export default {
     }
   },
 
-  // API thêm nhiều tổ hợp xét tuyển cho ngành
-  'POST /api/nganh/:id/to-hop': (req: Request, res: Response) => {
+  //  thêm nhiều tổ hợp xét tuyển cho ngành
+  'POST //nganh/:id/to_hop_xet_tuyen': (req: Request, res: Response) => {
     const db = readDB();
     const nganhId = parseInt(req.params.id);
     const { toHopList } = req.body; // Danh sách mã tổ hợp
@@ -715,8 +715,8 @@ export default {
     }
   },
 
-  // API lấy tất cả các mã tổ hợp có sẵn (định nghĩa sẵn)
-  'GET /api/to-hop-options': (req: Request, res: Response) => {
+  //  lấy tất cả các mã tổ hợp có sẵn (định nghĩa sẵn)
+  'GET //to_hop': (req: Request, res: Response) => {
     // Danh sách tổ hợp xét tuyển phổ biến
     const toHopOptions = [
       { ma_to_hop: 'A00', cac_mon: 'Toán+Lý+Hóa' },

@@ -9,7 +9,7 @@ export interface NganhType {
   mo_ta: string;
 }
 
-// Interface cho tổ hợp xét tuyển
+// Interface cho tổ hợp xét tuyển  
 export interface ToHopType {
   id: number;
   nganh_id: number;
@@ -17,25 +17,16 @@ export interface ToHopType {
   cac_mon: string;
 }
 
-const API_URL = '/api';
-
 /**
  * Lấy danh sách ngành theo trường
  */
 export const getNganhByTruongId = async (truongId: number) => {
   try {
-    const response = await axios.get(`${API_URL}/nganh/truong/${truongId}`);
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: response.data.data as NganhType[],
-      };
-    }
+    const response = await axios.get(`http://localhost:3000/nganh?truong_id=${truongId}`);
     return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi lấy danh sách ngành',
-      data: [],
+      success: true, 
+      message: "Lấy danh sách ngành thành công",
+      data: response.data as NganhType[],
     };
   } catch (error) {
     return {
@@ -51,18 +42,11 @@ export const getNganhByTruongId = async (truongId: number) => {
  */
 export const getToHopByNganhId = async (nganhId: number) => {
   try {
-    const response = await axios.get(`${API_URL}/to-hop/nganh/${nganhId}`);
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: response.data.data as ToHopType[],
-      };
-    }
+    const response = await axios.get(`http://localhost:3000/to_hop_xet_tuyen?nganh_id=${nganhId}`);
     return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi lấy danh sách tổ hợp xét tuyển',
-      data: [],
+      success: true,
+      message: "Lấy danh sách tổ hợp xét tuyển thành công",
+      data: response.data as ToHopType[],
     };
   } catch (error) {
     return {
@@ -78,18 +62,11 @@ export const getToHopByNganhId = async (nganhId: number) => {
  */
 export const getNganhById = async (id: number) => {
   try {
-    const response = await axios.get(`${API_URL}/nganh/${id}`);
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: response.data.data as NganhType,
-      };
-    }
+    const response = await axios.get(`http://localhost:3000/nganh/${id}`);
     return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi lấy thông tin ngành',
-      data: null,
+      success: true,
+      message: "Lấy thông tin ngành thành công", 
+      data: response.data as NganhType,
     };
   } catch (error) {
     return {
@@ -105,7 +82,7 @@ export const getNganhById = async (id: number) => {
  */
 export const addNganh = async (nganhData: Omit<NganhType, 'id'>) => {
   try {
-    const response = await axios.post(`${API_URL}/nganh`, nganhData);
+    const response = await axios.post(`http://localhost:3000/nganh`, nganhData);
     if (response.data.success) {
       return {
         success: true,
@@ -132,7 +109,7 @@ export const addNganh = async (nganhData: Omit<NganhType, 'id'>) => {
  */
 export const updateNganh = async (id: number, nganhData: Omit<NganhType, 'id'>) => {
   try {
-    const response = await axios.put(`${API_URL}/nganh/${id}`, nganhData);
+    const response = await axios.put(`http://localhost:3000/nganh/${id}`, nganhData);
     if (response.data.success) {
       return {
         success: true,
@@ -159,7 +136,7 @@ export const updateNganh = async (id: number, nganhData: Omit<NganhType, 'id'>) 
  */
 export const deleteNganh = async (id: number) => {
   try {
-    const response = await axios.delete(`${API_URL}/nganh/${id}`);
+    const response = await axios.delete(`http://localhost:3000/nganh/${id}`);
     if (response.data.success) {
       return {
         success: true,
@@ -182,49 +159,28 @@ export const deleteNganh = async (id: number) => {
 };
 
 /**
- * Lấy danh sách tổ hợp xét tuyển định sẵn
- */
-export const getToHopOptions = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/to-hop-options`);
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: response.data.data,
-      };
-    }
-    return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi lấy danh sách tổ hợp xét tuyển',
-      data: [],
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: 'Có lỗi xảy ra khi kết nối đến máy chủ',
-      data: [],
-    };
-  }
-};
-
-/**
  * Cập nhật tổ hợp xét tuyển cho ngành
  */
-export const updateToHopForNganh = async (nganhId: number, toHopList: { ma_to_hop: string; cac_mon: string }[]) => {
+export const updateToHopForNganh = async (nganh_id: number, toHopList: { ma_to_hop: string; cac_mon: string }[]) => {
   try {
-    const response = await axios.post(`${API_URL}/nganh/${nganhId}/to-hop`, { toHopList });
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: response.data.data as ToHopType[],
-      };
-    }
+    // Delete existing to_hop for this nganh first
+    const existing = await axios.get(`http://localhost:3000/to_hop_xet_tuyen?nganh_id=${nganh_id}`);
+    await Promise.all(existing.data.map((item: { id: any; }) => 
+      axios.delete(`http://localhost:3000/to_hop_xet_tuyen/${item.id}`)
+    ));
+    
+    // Add new to_hop entries
+    const newEntries = await Promise.all(toHopList.map(toHop => 
+      axios.post(`http://localhost:3000/to_hop_xet_tuyen`, {
+        nganh_id,
+        ...toHop
+      })
+    ));
+
     return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi cập nhật tổ hợp xét tuyển',
-      data: [],
+      success: true,
+      message: 'Cập nhật tổ hợp xét tuyển thành công',
+      data: newEntries.map(res => res.data) as ToHopType[],
     };
   } catch (error) {
     return {
@@ -240,17 +196,10 @@ export const updateToHopForNganh = async (nganhId: number, toHopList: { ma_to_ho
  */
 export const deleteToHop = async (id: number) => {
   try {
-    const response = await axios.delete(`${API_URL}/to-hop/${id}`);
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: null,
-      };
-    }
+    await axios.delete(`http://localhost:3000/to_hop_xet_tuyen/${id}`);
     return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi xóa tổ hợp xét tuyển',
+      success: true,
+      message: 'Xóa tổ hợp xét tuyển thành công',
       data: null,
     };
   } catch (error) {
@@ -260,4 +209,4 @@ export const deleteToHop = async (id: number) => {
       data: null,
     };
   }
-}; 
+};

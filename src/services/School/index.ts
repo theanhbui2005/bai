@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// Interface cho Trường đại học
 export interface TruongType {
   id: number;
   ma_truong: string;
@@ -9,26 +8,16 @@ export interface TruongType {
   loai_truong: string;
 }
 
-// API URL
-const API_URL = '/api';
-
 /**
  * Lấy danh sách tất cả các trường
  */
 export const getAllSchools = async () => {
   try {
-    const response = await axios.get(`${API_URL}/truong`);
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: response.data.data as TruongType[],
-      };
-    }
+    const response = await axios.get(`http://localhost:3000/truong`);
     return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi lấy danh sách trường',
-      data: [],
+      success: true,
+      message: 'Lấy danh sách trường thành công',
+      data: response.data as TruongType[],
     };
   } catch (error) {
     return {
@@ -44,18 +33,11 @@ export const getAllSchools = async () => {
  */
 export const getSchoolById = async (id: number) => {
   try {
-    const response = await axios.get(`${API_URL}/truong/${id}`);
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: response.data.data as TruongType,
-      };
-    }
+    const response = await axios.get(`http://localhost:3000/truong/${id}`);
     return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi lấy thông tin trường',
-      data: null,
+      success: true,
+      message: 'Lấy thông tin trường thành công',
+      data: response.data as TruongType,
     };
   } catch (error) {
     return {
@@ -71,18 +53,11 @@ export const getSchoolById = async (id: number) => {
  */
 export const addSchool = async (schoolData: Omit<TruongType, 'id'>) => {
   try {
-    const response = await axios.post(`${API_URL}/truong`, schoolData);
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: response.data.data as TruongType,
-      };
-    }
+    const response = await axios.post(`http://localhost:3000/truong`, schoolData);
     return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi thêm trường',
-      data: null,
+      success: true,
+      message: 'Thêm trường thành công',
+      data: response.data as TruongType,
     };
   } catch (error) {
     return {
@@ -98,18 +73,11 @@ export const addSchool = async (schoolData: Omit<TruongType, 'id'>) => {
  */
 export const updateSchool = async (id: number, schoolData: Omit<TruongType, 'id'>) => {
   try {
-    const response = await axios.put(`${API_URL}/truong/${id}`, schoolData);
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: response.data.data as TruongType,
-      };
-    }
+    const response = await axios.put(`http://localhost:3000/truong/${id}`, schoolData);
     return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi cập nhật thông tin trường',
-      data: null,
+      success: true,
+      message: 'Cập nhật thông tin trường thành công',
+      data: response.data as TruongType,
     };
   } catch (error) {
     return {
@@ -125,17 +93,10 @@ export const updateSchool = async (id: number, schoolData: Omit<TruongType, 'id'
  */
 export const deleteSchool = async (id: number) => {
   try {
-    const response = await axios.delete(`${API_URL}/truong/${id}`);
-    if (response.data.success) {
-      return {
-        success: true,
-        message: response.data.message,
-        data: null,
-      };
-    }
+    await axios.delete(`http://localhost:3000/truong/${id}`);
     return {
-      success: false,
-      message: response.data.message || 'Có lỗi xảy ra khi xóa trường',
+      success: true,
+      message: 'Xóa trường thành công',
       data: null,
     };
   } catch (error) {
@@ -145,4 +106,4 @@ export const deleteSchool = async (id: number) => {
       data: null,
     };
   }
-}; 
+};
