@@ -13,6 +13,16 @@ interface UserInfo {
   trang_thai?: string;
 }
 
+// Interface cho thông tin đăng ký
+interface RegisterInfo {
+  ho_ten: string;
+  ngay_sinh: string;
+  gioi_tinh: string;
+  so_cccd: string;
+  email: string;
+  sdt: string;
+}
+
 export default () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -38,6 +48,85 @@ export default () => {
       return { loggedIn: true, role: 'student' };
     }
     return { loggedIn: false, role: null };
+  };
+
+  // Hàm đăng ký thí sinh
+  const register = async (registerData: RegisterInfo) => {
+    try {
+      // Kiểm tra xem email đã tồn tại chưa
+      try {
+        const response = await axios.get('/api/ho-so');
+        if (response.data && response.data.data) {
+          const studentList = response.data.data;
+          
+          // Kiểm tra email đã tồn tại chưa
+          const existingEmail = studentList.find(
+            (s: any) => s.email === registerData.email
+          );
+          
+          if (existingEmail) {
+            message.error('Email đã được sử dụng. Vui lòng sử dụng email khác.');
+            return { success: false };
+          }
+          
+          // Kiểm tra số CCCD đã tồn tại chưa
+          const existingCCCD = studentList.find(
+            (s: any) => s.so_cccd === registerData.so_cccd
+          );
+          
+          if (existingCCCD) {
+            message.error('Số CCCD đã được đăng ký. Vui lòng kiểm tra lại.');
+            return { success: false };
+          }
+        }
+      } catch (error) {
+        console.error("Lỗi khi kiểm tra dữ liệu:", error);
+        message.error('Có lỗi xảy ra khi kiểm tra thông tin. Vui lòng thử lại sau.');
+        return { success: false };
+      }
+      
+      // Tạo hồ sơ mới cho thí sinh
+      const newHoSo = {
+        // Các trường cơ bản từ form đăng ký
+        ho_ten: registerData.ho_ten,
+        ngay_sinh: registerData.ngay_sinh,
+        gioi_tinh: registerData.gioi_tinh,
+        so_cccd: registerData.so_cccd,
+        email: registerData.email,
+        sdt: registerData.sdt,
+        
+        // Giá trị mặc định cho các trường khác
+        diem_thi: 0, // Sẽ được cập nhật khi thí sinh nộp điểm
+        doi_tuong_uu_tien: "",
+        truong_id: 0, // Chưa chọn trường
+        nganh_id: 0, // Chưa chọn ngành
+        file_minh_chung: "",
+        trang_thai: "moi_dang_ky",
+        ngay_gui: new Date().toISOString(),
+        ghi_chu: "Tài khoản mới đăng ký"
+      };
+      
+      // Gửi yêu cầu tạo hồ sơ mới
+      try {
+        const response = await axios.post('/api/ho-so', newHoSo);
+        
+        if (response.data && response.data.success) {
+          message.success('Đăng ký thành công! Bạn có thể đăng nhập với email hoặc CCCD của mình.');
+          return { success: true };
+        } else {
+          message.error('Đăng ký thất bại. Vui lòng thử lại sau.');
+          return { success: false };
+        }
+      } catch (error) {
+        console.error("Lỗi khi đăng ký:", error);
+        message.error('Đăng ký thất bại. Vui lòng thử lại sau.');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error("Lỗi đăng ký:", error);
+      message.error('Có lỗi xảy ra. Vui lòng thử lại sau.');
+      return { success: false };
+    }
   };
 
   // Hàm đăng nhập
@@ -159,5 +248,6 @@ export default () => {
     login,
     logout,
     checkLoginStatus,
+    register,
   };
 }; 

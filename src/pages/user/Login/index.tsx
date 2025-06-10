@@ -5,7 +5,8 @@ import {
 	SafetyOutlined, 
 	MailOutlined, 
 	BankOutlined, 
-	IdcardOutlined
+	IdcardOutlined,
+	UserAddOutlined
 } from '@ant-design/icons';
 import { useModel, history } from 'umi';
 import styles from './index.less';
@@ -14,9 +15,11 @@ const { TabPane } = Tabs;
 const { Title, Text, Paragraph } = Typography;
 
 const Login: React.FC = () => {
-	const { login, loading, isLoggedIn, userRole, checkLoginStatus } = useModel('auth');
+	const { login, loading, isLoggedIn, userRole, checkLoginStatus, register } = useModel('auth');
 	const [form] = Form.useForm();
+	const [registerForm] = Form.useForm();
 	const [activeTab, setActiveTab] = useState<string>('1');
+	const [registering, setRegistering] = useState<boolean>(false);
 
 	// Kiểm tra trạng thái đăng nhập
 	useEffect(() => {
@@ -52,9 +55,33 @@ const Login: React.FC = () => {
 		}
 	};
 
+	const onRegisterFinish = async (values: any) => {
+		setRegistering(true);
+		try {
+			// Tạo thông tin đăng ký cơ bản
+			const formattedValues = {
+				...values,
+				// Thêm các trường bắt buộc
+				ngay_sinh: '2000-01-01',
+				gioi_tinh: 'Nam',
+				sdt: '0000000000'
+			};
+			
+			const result = await register(formattedValues);
+			if (result.success) {
+				registerForm.resetFields();
+				// Chuyển về tab đăng nhập
+				setActiveTab('1');
+			}
+		} finally {
+			setRegistering(false);
+		}
+	};
+
 	const handleTabChange = (key: string) => {
 		setActiveTab(key);
 		form.resetFields();
+		registerForm.resetFields();
 	};
 
 	return (
@@ -72,6 +99,7 @@ const Login: React.FC = () => {
 					centered 
 					onChange={handleTabChange}
 					tabBarStyle={{ borderBottom: '1px solid #f0f0f0', marginBottom: 24 }}
+					activeKey={activeTab}
 				>
 					<TabPane 
 						tab={
@@ -91,6 +119,15 @@ const Login: React.FC = () => {
 						} 
 						key="2"
 					/>
+					<TabPane 
+						tab={
+							<span>
+								<UserAddOutlined />
+								Đăng Ký
+							</span>
+						} 
+						key="3"
+					/>
 				</Tabs>
 
 				{activeTab === '1' && (
@@ -108,47 +145,129 @@ const Login: React.FC = () => {
 					/>
 				)}
 
-				<Form
-					form={form}
-					name="login"
-					onFinish={onFinish}
-					size="large"
-					layout="vertical"
-				>
-					<Form.Item
-						name="username"
-						label={activeTab === '1' ? "Email/CCCD" : "Tên đăng nhập"}
-						rules={[{ required: true, message: activeTab === '1' ? 'Vui lòng nhập email hoặc CCCD!' : 'Vui lòng nhập tên đăng nhập!' }]}
-					>
-						<Input 
-							prefix={activeTab === '1' ? <MailOutlined className={styles.prefixIcon} /> : <UserOutlined className={styles.prefixIcon} />} 
-							placeholder={activeTab === '1' ? "Nhập email hoặc số CCCD" : "Nhập tên đăng nhập"}
-						/>
-					</Form.Item>
+				{activeTab === '3' && (
+					<Alert
+						message="Thông tin đăng ký thí sinh"
+						description={
+							<>
+								<div>Vui lòng điền đầy đủ thông tin để đăng ký tài khoản.</div>
+								<div>Số CCCD sẽ được dùng làm mật khẩu đăng nhập của bạn.</div>
+								<div>Sau khi đăng ký thành công, bạn có thể đăng nhập bằng <Text strong>Email</Text> hoặc <Text strong>Số CCCD</Text>.</div>
+							</>
+						}
+						type="info"
+						showIcon
+						style={{ marginBottom: 24 }}
+					/>
+				)}
 
-					<Form.Item
-						name="password"
-						label="Mật khẩu"
-						rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+				{/* Form đăng nhập */}
+				{(activeTab === '1' || activeTab === '2') && (
+					<Form
+						form={form}
+						name="login"
+						onFinish={onFinish}
+						size="large"
+						layout="vertical"
 					>
-						<Input.Password
-							prefix={<SafetyOutlined className={styles.prefixIcon} />}
-							placeholder="Nhập mật khẩu"
-						/>
-					</Form.Item>
-
-					<Form.Item>
-						<Button 
-							type="primary" 
-							htmlType="submit" 
-							loading={loading}
-							className={styles.loginButton}
-							block
+						<Form.Item
+							name="username"
+							label={activeTab === '1' ? "Email/CCCD" : "Tên đăng nhập"}
+							rules={[{ required: true, message: activeTab === '1' ? 'Vui lòng nhập email hoặc CCCD!' : 'Vui lòng nhập tên đăng nhập!' }]}
 						>
-							Đăng Nhập
-						</Button>
-					</Form.Item>
-				</Form>
+							<Input 
+								prefix={activeTab === '1' ? <MailOutlined className={styles.prefixIcon} /> : <UserOutlined className={styles.prefixIcon} />} 
+								placeholder={activeTab === '1' ? "Nhập email hoặc số CCCD" : "Nhập tên đăng nhập"}
+							/>
+						</Form.Item>
+
+						<Form.Item
+							name="password"
+							label="Mật khẩu"
+							rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+						>
+							<Input.Password
+								prefix={<SafetyOutlined className={styles.prefixIcon} />}
+								placeholder="Nhập mật khẩu"
+							/>
+						</Form.Item>
+
+						<Form.Item>
+							<Button 
+								type="primary" 
+								htmlType="submit" 
+								loading={loading}
+								className={styles.loginButton}
+								block
+							>
+								Đăng Nhập
+							</Button>
+						</Form.Item>
+					</Form>
+				)}
+
+				{/* Form đăng ký đã được cập nhật */}
+				{activeTab === '3' && (
+					<Form
+						form={registerForm}
+						name="register"
+						onFinish={onRegisterFinish}
+						size="large"
+						layout="vertical"
+					>
+						<Form.Item
+							name="ho_ten"
+							label="Họ và tên"
+							rules={[{ required: true, message: 'Vui lòng nhập họ và tên!' }]}
+						>
+							<Input 
+								prefix={<UserOutlined className={styles.prefixIcon} />} 
+								placeholder="Nhập họ và tên"
+							/>
+						</Form.Item>
+
+						<Form.Item
+							name="email"
+							label="Email"
+							rules={[
+								{ required: true, message: 'Vui lòng nhập email!' },
+								{ type: 'email', message: 'Email không hợp lệ!' }
+							]}
+						>
+							<Input
+								prefix={<MailOutlined className={styles.prefixIcon} />}
+								placeholder="Nhập email"
+							/>
+						</Form.Item>
+
+						<Form.Item
+							name="so_cccd"
+							label="Số CCCD (dùng làm mật khẩu)"
+							rules={[
+								{ required: true, message: 'Vui lòng nhập số CCCD!' },
+								{ pattern: /^[0-9]{12}$/, message: 'Số CCCD phải đủ 12 chữ số!' }
+							]}
+						>
+							<Input
+								prefix={<IdcardOutlined className={styles.prefixIcon} />}
+								placeholder="Nhập số CCCD"
+							/>
+						</Form.Item>
+
+						<Form.Item>
+							<Button 
+								type="primary" 
+								htmlType="submit" 
+								loading={registering}
+								className={styles.loginButton}
+								block
+								size="large"
+							>
+								Đăng Ký
+							</Button>
+						</Form.Item>
+					</Form>
+				)}
 			</div>
 
 			<div className={styles.footer}>

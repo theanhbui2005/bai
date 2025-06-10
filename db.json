@@ -517,9 +517,9 @@
       "truong_id": 4,
       "nganh_id": 11,
       "file_minh_chung": "uploads/hoc_ba_105.pdf,uploads/cccd_105.jpg",
-      "trang_thai": "tu_choi",
+      "trang_thai": "cho_duyet",
       "ngay_gui": "2025-05-18T11:20:00",
-      "ghi_chu": "chia buon nha"
+      "ghi_chu": "Hồ sơ đã được reset về trạng thái chờ duyệt"
     },
     {
       "id": 106,
@@ -527,7 +527,7 @@
       "ngay_sinh": "2007-02-17",
       "gioi_tinh": "Nữ",
       "so_cccd": "012345678906",
-      "email": "phamky136@gmail",
+      "email": "kypx.b23cc092@stu.ptit.edu.vn",
       "sdt": "0912345683",
       "diem_thi": 21.5,
       "doi_tuong_uu_tien": "KV3",
@@ -537,6 +537,23 @@
       "trang_thai": "cho_duyet",
       "ngay_gui": "2025-05-19T13:15:00",
       "ghi_chu": "Hồ sơ đã được reset về trạng thái chờ duyệt"
+    },
+    {
+      "id": 107,
+      "ho_ten": "phạm kỳ",
+      "ngay_sinh": "2000-01-01",
+      "gioi_tinh": "Nam",
+      "so_cccd": "312312321333",
+      "email": "123@gmail.com",
+      "sdt": "0000000000",
+      "diem_thi": 0,
+      "doi_tuong_uu_tien": "",
+      "truong_id": 0,
+      "nganh_id": 0,
+      "file_minh_chung": "",
+      "trang_thai": "moi_dang_ky",
+      "ngay_gui": "2025-06-10T07:52:20.622Z",
+      "ghi_chu": "Tài khoản mới đăng ký"
     }
   ],
   "admin": [

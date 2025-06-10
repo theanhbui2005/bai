@@ -111,6 +111,62 @@ export default {
     }
   },
 
+  // API đăng ký thí sinh mới
+  'POST /api/ho-so': (req: Request, res: Response) => {
+    console.log("Nhận yêu cầu đăng ký thí sinh mới:", req.body);
+    const db = readDB();
+    const hoSoData = req.body;
+    
+    // Kiểm tra email đã tồn tại
+    const existingEmail = db.ho_so.find((item: any) => item.email === hoSoData.email);
+    if (existingEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email đã được sử dụng. Vui lòng sử dụng email khác.',
+        data: null
+      });
+    }
+    
+    // Kiểm tra số CCCD đã tồn tại
+    const existingCCCD = db.ho_so.find((item: any) => item.so_cccd === hoSoData.so_cccd);
+    if (existingCCCD) {
+      return res.status(400).json({
+        success: false,
+        message: 'Số CCCD đã được đăng ký. Vui lòng kiểm tra lại.',
+        data: null
+      });
+    }
+    
+    // Tạo ID mới cho hồ sơ
+    const newId = db.ho_so.length > 0 ? Math.max(...db.ho_so.map((item: any) => item.id)) + 1 : 1;
+    
+    // Tạo hồ sơ mới
+    const newHoSo = {
+      id: newId,
+      ...hoSoData,
+    };
+    
+    // Thêm hồ sơ vào danh sách
+    db.ho_so.push(newHoSo);
+    
+    // Lưu thay đổi vào db.json
+    const success = writeDB(db);
+    
+    if (success) {
+      res.status(201).json({
+        success: true,
+        message: 'Đăng ký thành công',
+        data: newHoSo
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Không thể lưu thông tin đăng ký',
+        data: null
+      });
+    }
+  },
+
   // API hồ sơ
   'GET /api/ho-so': (req: Request, res: Response) => {
     const db = readDB();
