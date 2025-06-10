@@ -137,6 +137,33 @@ export default {
       });
     }
     
+    // Kiểm tra to_hop_id có hợp lệ
+    if (hoSoData.to_hop_id && hoSoData.to_hop_id !== 0) {
+      // Kiểm tra tổ hợp có tồn tại không
+      const toHopExists = db.to_hop_xet_tuyen.some((item: any) => item.id === hoSoData.to_hop_id);
+      if (!toHopExists) {
+        return res.status(400).json({
+          success: false,
+          message: 'Tổ hợp xét tuyển không hợp lệ.',
+          data: null
+        });
+      }
+      
+      // Kiểm tra tổ hợp có phù hợp với ngành không
+      if (hoSoData.nganh_id && hoSoData.nganh_id !== 0) {
+        const toHopMatches = db.to_hop_xet_tuyen.some(
+          (item: any) => item.id === hoSoData.to_hop_id && item.nganh_id === hoSoData.nganh_id
+        );
+        if (!toHopMatches) {
+          return res.status(400).json({
+            success: false,
+            message: 'Tổ hợp xét tuyển không phù hợp với ngành đã chọn.',
+            data: null
+          });
+        }
+      }
+    }
+    
     // Tạo ID mới cho hồ sơ
     const newId = db.ho_so.length > 0 ? Math.max(...db.ho_so.map((item: any) => item.id)) + 1 : 1;
     
@@ -144,6 +171,7 @@ export default {
     const newHoSo = {
       id: newId,
       ...hoSoData,
+      to_hop_id: hoSoData.to_hop_id || 0, // Đảm bảo có trường to_hop_id
     };
     
     // Thêm hồ sơ vào danh sách
@@ -212,6 +240,34 @@ export default {
       }
     }
     
+    // Kiểm tra to_hop_id có hợp lệ nếu được cung cấp
+    if (hoSoData.to_hop_id !== undefined && hoSoData.to_hop_id !== 0) {
+      // Kiểm tra tổ hợp có tồn tại không
+      const toHopExists = db.to_hop_xet_tuyen.some((item: any) => item.id === hoSoData.to_hop_id);
+      if (!toHopExists) {
+        return res.status(400).json({
+          success: false,
+          message: 'Tổ hợp xét tuyển không hợp lệ.',
+          data: null
+        });
+      }
+      
+      // Kiểm tra tổ hợp có phù hợp với ngành không
+      const nganhId = hoSoData.nganh_id !== undefined ? hoSoData.nganh_id : db.ho_so[hoSoIndex].nganh_id;
+      if (nganhId && nganhId !== 0) {
+        const toHopMatches = db.to_hop_xet_tuyen.some(
+          (item: any) => item.id === hoSoData.to_hop_id && item.nganh_id === nganhId
+        );
+        if (!toHopMatches) {
+          return res.status(400).json({
+            success: false,
+            message: 'Tổ hợp xét tuyển không phù hợp với ngành đã chọn.',
+            data: null
+          });
+        }
+      }
+    }
+    
     // Giữ lại ID và các trường không được phép cập nhật
     const updatedHoSo = {
       ...db.ho_so[hoSoIndex],    // Giữ lại các trường cũ
@@ -221,10 +277,6 @@ export default {
       trang_thai: db.ho_so[hoSoIndex].trang_thai,
       ngay_gui: db.ho_so[hoSoIndex].ngay_gui,
       ghi_chu: db.ho_so[hoSoIndex].ghi_chu,
-      truong_id: db.ho_so[hoSoIndex].truong_id,
-      nganh_id: db.ho_so[hoSoIndex].nganh_id,
-      diem_thi: db.ho_so[hoSoIndex].diem_thi,
-      file_minh_chung: db.ho_so[hoSoIndex].file_minh_chung,
     };
     
     // Cập nhật hồ sơ
@@ -885,5 +937,89 @@ export default {
       message: 'Lấy danh sách tổ hợp xét tuyển thành công',
       data: toHopOptions
     });
-  }
+  },
+
+  // API lấy chi tiết tổ hợp xét tuyển theo ID
+  'GET /api/to-hop/:id': (req: Request, res: Response) => {
+    const db = readDB();
+    const toHopId = parseInt(req.params.id);
+    const toHop = db.to_hop_xet_tuyen.find((item: any) => item.id === toHopId);
+    
+    if (toHop) {
+      res.status(200).json({
+        success: true,
+        message: 'Lấy thông tin tổ hợp xét tuyển thành công',
+        data: toHop
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy tổ hợp xét tuyển',
+        data: null
+      });
+    }
+  },
+
+  // API upload file minh chứng
+  'POST /api/upload-minh-chung': (req: Request, res: Response) => {
+    try {
+      // Trong môi trường mock, chúng ta giả lập việc upload file
+      // Thông thường sẽ xử lý upload thật và trả về đường dẫn
+      
+      // Trích xuất tên file từ yêu cầu
+      const fileName = req.body.fileName || `file_${Date.now()}.pdf`;
+      
+      // Tạo đường dẫn giả định cho file đã upload
+      const filePath = `uploads/${fileName}`;
+      
+      // Log thông tin
+      console.log(`Giả lập upload file: ${filePath}`);
+      
+      // Trả về kết quả thành công với đường dẫn file
+      setTimeout(() => {
+        res.status(200).json({
+          success: true,
+          message: 'Upload minh chứng thành công',
+          data: {
+            filePath: filePath,
+            fileName: fileName
+          }
+        });
+      }, 1000); // Giả lập độ trễ 1 giây để tạo cảm giác đang upload
+    } catch (error) {
+      console.error('Lỗi khi xử lý upload file:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Không thể upload file minh chứng',
+        data: null
+      });
+    }
+  },
+  
+  // API xóa file minh chứng
+  'DELETE /api/minh-chung/:filename': (req: Request, res: Response) => {
+    try {
+      // Trong môi trường mock, chúng ta giả lập việc xóa file
+      
+      // Trích xuất tên file từ tham số đường dẫn
+      const fileName = req.params.filename;
+      
+      // Log thông tin
+      console.log(`Giả lập xóa file: uploads/${fileName}`);
+      
+      // Trả về kết quả thành công
+      res.status(200).json({
+        success: true,
+        message: 'Xóa minh chứng thành công',
+        data: null
+      });
+    } catch (error) {
+      console.error('Lỗi khi xử lý xóa file:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Không thể xóa file minh chứng',
+        data: null
+      });
+    }
+  },
 }; 
