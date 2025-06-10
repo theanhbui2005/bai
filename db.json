@@ -585,4 +585,116 @@
       "trang_thai": "active"
     }
   ]
+}{
+  "truong": [
+    {
+      "id": "1",
+      "ma_truong": "DHKHTN",
+      "ten_truong": "Đại học Khoa học Tự nhiên",
+      "dia_chi": "227 Nguyễn Văn Cừ, Quận 5, TP.HCM",
+      "loai_truong": "Công lập",
+      "website": "www.hcmus.edu.vn",
+      "mo_ta": "Trường đại học hàng đầu về khoa học tự nhiên"
+    }
+  ],
+  "nganh": [
+    {
+      "id": "1", 
+      "truong_id": "1",
+      "ma_nganh": "7480201",
+      "ten_nganh": "Khoa học máy tính",
+      "chi_tieu": 120,
+      "diem_san": 23.0,
+      "mo_ta": "Đào tạo chuyên sâu về lập trình, thuật toán"
+    }
+  ],
+  "to_hop_xet_tuyen": [
+    {
+      "id": "1",
+      "nganh_id": "1",
+      "ma_to_hop": "A00",
+      "ten_to_hop": "Toán, Lý, Hóa",
+      "mon_thi": ["Toán", "Vật lý", "Hóa học"],
+      "he_so": [2, 1, 1]
+    }
+  ],
+  "ho_so": [
+    {
+      "id": "1",
+      "user_id": "1",
+      "ho_ten": "Nguyễn Văn A",
+      "ngay_sinh": "2005-01-01",
+      "gioi_tinh": "Nam", 
+      "so_cccd": "001202005123",
+      "email": "nguyenvana@gmail.com",
+      "sdt": "0912345678",
+      "dia_chi": "123 Nguyễn Văn Cừ, Q.5, TP.HCM",
+      "truong_id": "1",
+      "nganh_id": "1", 
+      "to_hop_id": "1",
+      "diem_thi": 25.5,
+      "diem_chi_tiet": [
+        {"mon": "Toán", "diem": 9.0},
+        {"mon": "Lý", "diem": 8.5},
+        {"mon": "Hóa", "diem": 8.0}
+      ],
+      "doi_tuong_uu_tien": "KV2-NT",
+      "diem_uu_tien": 0.5,
+      "file_minh_chung": [
+        "uploads/cccd_001.jpg",
+        "uploads/hocba_001.pdf"
+      ],
+      "trang_thai": "cho_duyet",
+      "ghi_chu": "",
+      "nguoi_duyet": "",
+      "ngay_nop": "2024-06-01T09:00:00",
+      "ngay_duyet": null
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "username": "thisinh01", 
+      "password": "hash_password",
+      "email": "thisinh01@gmail.com",
+      "ho_ten": "Nguyễn Văn A",
+      "role": "thisinh",
+      "trang_thai": "active",
+      "ngay_tao": "2024-01-01T00:00:00",
+      "lan_dang_nhap_cuoi": "2024-06-01T09:00:00"
+    }
+  ],
+  "admins": [
+    {
+      "id": "1",
+      "username": "admin",
+      "password": "hash_password", 
+      "email": "admin@hcmus.edu.vn",
+      "ho_ten": "Administrator",
+      "role": "superadmin",
+      "trang_thai": "active",
+      "phan_quyen": ["quan_ly_truong", "quan_ly_nganh", "quan_ly_ho_so"],
+      "ngay_tao": "2024-01-01T00:00:00",
+      "lan_dang_nhap_cuoi": "2024-06-01T09:00:00"
+    }
+  ],
+  "thong_bao": [
+    {
+      "id": "1",
+      "user_id": "1",
+      "tieu_de": "Thông báo hồ sơ đã được duyệt",
+      "noi_dung": "Hồ sơ của bạn đã được duyệt thành công",
+      "trang_thai": "chua_doc",
+      "ngay_tao": "2024-06-01T10:00:00"
+    }
+  ],
+  "email_templates": [
+    {
+      "id": "1",
+      "ma_template": "nop_ho_so_thanh_cong",
+      "tieu_de": "Xác nhận nộp hồ sơ thành công",
+      "noi_dung": "Kính gửi {{ho_ten}},\n\nHồ sơ xét tuyển của bạn đã được tiếp nhận thành công...",
+      "mo_ta": "Template email gửi khi thí sinh nộp hồ sơ thành công"
+    }
+  ]
 }

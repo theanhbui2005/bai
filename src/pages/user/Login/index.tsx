@@ -4,7 +4,7 @@ import { adminlogin, getUserInfo } from '@/services/base/api';
 import { keycloakAuthority } from '@/utils/ip';
 import rules from '@/utils/rules';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Tabs, message } from 'antd';
+import { Button, Form, Input, Tabs, message, Card } from 'antd';
 import React, { useState } from 'react';
 // import Recaptcha from 'react-recaptcha';
 import { history, useIntl, useModel } from 'umi';
@@ -112,39 +112,43 @@ const Login: React.FC = () => {
 					{type === 'account' ? (
 						<LoginWithKeycloak />
 					) : type === 'accountAdmin' ? (
-						<Form
-							form={form}
-							onFinish={async (values) => handleSubmit(values as { login: string; password: string })}
-							layout='vertical'
-						>
-							<Form.Item label='' name='login' rules={[...rules.required]}>
-								<Input
-									placeholder={intl.formatMessage({
-										id: 'pages.login.username.placeholder',
-										defaultMessage: 'Nhập tên đăng nhập',
-									})}
-									prefix={<UserOutlined className={styles.prefixIcon} />}
-									size='large'
-								/>
-							</Form.Item>
-							<Form.Item label='' name='password' rules={[...rules.required]}>
-								<Input.Password
-									placeholder={intl.formatMessage({
-										id: 'pages.login.password.placeholder',
-										defaultMessage: 'Nhập mật khẩu',
-									})}
-									prefix={<LockOutlined className={styles.prefixIcon} />}
-									size='large'
-								/>
-							</Form.Item>
+						<Card title='Login' style={{ width: 400 }}>
+							<Form
+								form={form}
+								onFinish={async (values) => handleSubmit(values as { login: string; password: string })}
+								layout='vertical'
+							>
+								<Form.Item label='' name='login' rules={[...rules.required]}>
+									<Input
+										placeholder={intl.formatMessage({
+											id: 'pages.login.username.placeholder',
+											defaultMessage: 'Nhập tên đăng nhập',
+										})}
+										prefix={<UserOutlined className={styles.prefixIcon} />}
+										size='large'
+									/>
+								</Form.Item>
+								<Form.Item label='' name='password' rules={[...rules.required]}>
+									<Input.Password
+										placeholder={intl.formatMessage({
+											id: 'pages.login.password.placeholder',
+											defaultMessage: 'Nhập mật khẩu',
+										})}
+										prefix={<LockOutlined className={styles.prefixIcon} />}
+										size='large'
+									/>
+								</Form.Item>
 
-							<Button type='primary' block size='large' loading={submitting}>
-								{intl.formatMessage({
-									id: 'pages.login.submit',
-									defaultMessage: 'submit',
-								})}
-							</Button>
-						</Form>
+								<Form.Item>
+									<Button type='primary' block size='large' loading={submitting}>
+										{intl.formatMessage({
+											id: 'pages.login.submit',
+											defaultMessage: 'submit',
+										})}
+									</Button>
+								</Form.Item>
+							</Form>
+						</Card>
 					) : null}
 
 					<br />

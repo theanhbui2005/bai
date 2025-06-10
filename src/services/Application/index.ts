@@ -22,6 +22,7 @@ export interface HoSoType {
 const API_URL = '/api';
 
 /**
+<<<<<<< HEAD
  * Nộp hồ sơ mới
  */
 export const submitApplication = async (data: Omit<HoSoType, 'id' | 'ngay_gui' | 'trang_thai'>) => {
@@ -47,6 +48,8 @@ export const submitApplication = async (data: Omit<HoSoType, 'id' | 'ngay_gui' |
 };
 
 /**
+=======
+>>>>>>> theanh2
  * Lấy danh sách tất cả hồ sơ
  */
 export const getAllApplications = async () => {
@@ -133,6 +136,7 @@ export const updateApplicationStatus = async (
       data: null,
     };
   }
+<<<<<<< HEAD
 };
 
 /**
@@ -154,3 +158,6 @@ export const getApplicationsByStudent = async (studentId: number) => {
     };
   }
 };
+=======
+}; 
+>>>>>>> theanh2

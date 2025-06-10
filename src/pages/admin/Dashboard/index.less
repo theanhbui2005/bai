@@ -1,0 +1,28 @@
+.dashboardCard {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+  transition: all 0.3s;
+  min-height: 270px;
+  
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-5px);
+  }
+
+  :global {
+    .ant-card-head {
+      border-bottom: 1px solid #f0f0f0;
+      padding: 0 16px;
+    }
+
+    .ant-card-body {
+      padding: 20px;
+      
+      p {
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: rgba(0, 0, 0, 0.65);
+      }
+    }
+  }
+} 
