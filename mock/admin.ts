@@ -167,6 +167,87 @@ export default {
     }
   },
 
+  // API cập nhật thông tin hồ sơ thí sinh
+  'PUT /api/ho-so/:id': (req: Request, res: Response) => {
+    console.log("Nhận yêu cầu cập nhật hồ sơ thí sinh:", req.body);
+    const db = readDB();
+    const hoSoId = parseInt(req.params.id);
+    const hoSoData = req.body;
+    
+    // Kiểm tra hồ sơ tồn tại
+    const hoSoIndex = db.ho_so.findIndex((item: any) => item.id === hoSoId);
+    if (hoSoIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy hồ sơ với ID cung cấp',
+        data: null
+      });
+    }
+    
+    // Kiểm tra email đã tồn tại (trừ email của chính hồ sơ này)
+    if (hoSoData.email) {
+      const existingEmail = db.ho_so.find(
+        (item: any) => item.email === hoSoData.email && item.id !== hoSoId
+      );
+      if (existingEmail) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email đã được sử dụng bởi thí sinh khác',
+          data: null
+        });
+      }
+    }
+    
+    // Kiểm tra CCCD đã tồn tại (trừ CCCD của chính hồ sơ này)
+    if (hoSoData.so_cccd) {
+      const existingCCCD = db.ho_so.find(
+        (item: any) => item.so_cccd === hoSoData.so_cccd && item.id !== hoSoId
+      );
+      if (existingCCCD) {
+        return res.status(400).json({
+          success: false,
+          message: 'Số CCCD đã được đăng ký bởi thí sinh khác',
+          data: null
+        });
+      }
+    }
+    
+    // Giữ lại ID và các trường không được phép cập nhật
+    const updatedHoSo = {
+      ...db.ho_so[hoSoIndex],    // Giữ lại các trường cũ
+      ...hoSoData,               // Cập nhật các trường mới
+      id: hoSoId,                // Đảm bảo ID không đổi
+      // Giữ nguyên các trường không được phép thay đổi
+      trang_thai: db.ho_so[hoSoIndex].trang_thai,
+      ngay_gui: db.ho_so[hoSoIndex].ngay_gui,
+      ghi_chu: db.ho_so[hoSoIndex].ghi_chu,
+      truong_id: db.ho_so[hoSoIndex].truong_id,
+      nganh_id: db.ho_so[hoSoIndex].nganh_id,
+      diem_thi: db.ho_so[hoSoIndex].diem_thi,
+      file_minh_chung: db.ho_so[hoSoIndex].file_minh_chung,
+    };
+    
+    // Cập nhật hồ sơ
+    db.ho_so[hoSoIndex] = updatedHoSo;
+    
+    // Lưu thay đổi vào db.json
+    const success = writeDB(db);
+    
+    if (success) {
+      res.status(200).json({
+        success: true,
+        message: 'Cập nhật thông tin hồ sơ thành công',
+        data: updatedHoSo
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Không thể lưu thay đổi vào cơ sở dữ liệu',
+        data: null
+      });
+    }
+  },
+
   // API hồ sơ
   'GET /api/ho-so': (req: Request, res: Response) => {
     const db = readDB();
