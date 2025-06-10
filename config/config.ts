@@ -1,7 +1,6 @@
 // https://umijs.org/config/
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
-import routes from './routes';
 // import proxy from './proxy';
 // const { REACT_APP_ENV } = process.env;
 
@@ -31,7 +30,26 @@ export default defineConfig({
 	targets: {
 		ie: 11,
 	},
-	routes,
+	routes: [
+		{
+			path: '/student',
+			component: '@/layouts/BasicLayout',
+			routes: [
+				{ path: '/student/application', component: '@/pages/student/application/index' },
+				{ path: '/student/application/list', component: '@/pages/student/application/list/index' },
+			],
+		},
+		{
+			path: '/admin',
+			component: '@/layouts/BasicLayout',
+			routes: [
+				{ path: '/admin/dashboard', component: '@/pages/admin/dashboard/index' },
+				{ path: '/admin/school', component: '@/pages/admin/school/index' },
+				{ path: '/admin/application', component: '@/pages/admin/application/index' },
+				{ path: '/admin/email-settings', component: '@/pages/admin/email-settings/index' },
+			],
+		},
+	],
 	// Theme for antd: https://ant.design/docs/react/customize-theme-cn
 	theme: {
 		'primary-color': defaultSettings.primaryColor,
